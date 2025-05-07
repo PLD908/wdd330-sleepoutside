@@ -7,7 +7,7 @@ const cartItemsObject = {};
 function addProductToCart(product) {
   if(localStorage.getItem("so-cart")){
     const parsedCart = JSON.parse(localStorage.getItem("so-cart") || {});
-    Object.assign(cartItemsObject, parsedCart)
+    Object.assign(cartItemsObject, parsedCart) //Assign to object.
   }
   setLocalStorage("so-cart", product);
 }
