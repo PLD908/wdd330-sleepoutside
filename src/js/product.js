@@ -3,12 +3,12 @@ import ProductData from "./ProductData.mjs";
 
 const dataSource = new ProductData("tents");
 
-  //Here is my thought process
-  /**********************************************
+//Here is my thought process
+/**********************************************
  * In this function the product object is being passed to addProductToCart as an argument
  * Instead i think need to pass in an array of elements instead
  * But first check of so-cart exists , if not create an empty array
- * Then push product to that array 
+ * Then push product to that array
  * Set array as value to the Local Storage.
  **********************************************/
 
@@ -20,7 +20,7 @@ function addProductToCart(product) {
 // add to cart button event handler
 async function addToCartHandler(e) {
   const product = await dataSource.findProductById(e.target.dataset.id);
-  //console.log(JSON.stringify(product, null, 3)) for testing 
+  //console.log(JSON.stringify(product, null, 3)) for testing
   addProductToCart(product);
 }
 
