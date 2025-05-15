@@ -35,13 +35,12 @@ function displayCartTotal(cartItems) {
       <h3>Cart Summary</h3>
       <p>Total: $<span id="cart-total-amount">0.00</span></p>
       <button id="checkout-button" class="checkout-button">Checkout</button>
+      <div id="cart-error" class="cart-error" style="display: none;"></div>
     `;
     document.querySelector(".products").appendChild(totalSection);
 
     // Add checkout button event listener
-    document.getElementById("checkout-button").addEventListener("click", () => {
-      alert("Checkout functionality would go here!");
-    });
+    document.getElementById("checkout-button").addEventListener("click", handleCheckout);
   }
 
   // Calculate total
@@ -50,6 +49,25 @@ function displayCartTotal(cartItems) {
     0,
   );
   document.getElementById("cart-total-amount").textContent = total.toFixed(2);
+}
+
+function handleCheckout() {
+  const cartItems = getLocalStorage("so-cart") || [];
+  const errorElement = document.getElementById("cart-error");
+  
+  if (cartItems.length === 0) {
+    errorElement.textContent = "🛒 Your cart is empty! Please add items before checkout.";
+    errorElement.style.display = "block";
+    
+    // Hide error after 3 seconds
+    setTimeout(() => {
+      errorElement.style.display = "none";
+    }, 3000);
+    return;
+  }
+  
+  // Proceed to checkout if cart has items
+  window.location.href = "/checkout/index.html";
 }
 
 function cartItemTemplate(item) {
