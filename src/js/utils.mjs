@@ -12,6 +12,12 @@ export function getLocalStorage(key) {
   }
 }
 
+export function getParam(param) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  return urlParams.get(param);
+}
+
 // Function to save data to localStorage
 export function setLocalStorage(key, data) {
   let items = getLocalStorage(key);
