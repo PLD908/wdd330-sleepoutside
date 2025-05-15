@@ -7,7 +7,7 @@ export function getLocalStorage(key) {
   try {
     return JSON.parse(data);
   } catch (error) {
-    console.error("Error parsing localStorage data:", error);
+    //console.error("Error parsing localStorage data:", error);
     return [];
   }
 }
