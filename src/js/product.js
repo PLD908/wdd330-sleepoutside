@@ -17,11 +17,15 @@ function addProductToCart(product) {
   products.push(product); //push the incoming product to products array.
   setLocalStorage("so-cart", products); //set the current to local storage with key "so-cart" and value (an array of objects)
 }
+
 // add to cart button event handler
 async function addToCartHandler(e) {
   const product = await dataSource.findProductById(e.target.dataset.id);
   //console.log(JSON.stringify(product, null, 3)) for testing
   addProductToCart(product);
+  
+  // Optional: Show a notification that the item was added to cart
+  alert("Item added to cart!");
 }
 
 // add listener to Add to Cart button
