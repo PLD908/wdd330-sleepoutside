@@ -1,13 +1,13 @@
 
 
 
-
+import { setLocalStorage } from "./utils.mjs";
 
 
 export default class productDetails{ //Tracks and establishes the product
-    constructor(){ //This initialises the object providing the build template
-        this.category = category; 
-        this.path = `../json/${this.category}.json`;
+    constructor(productId, dataSource){ //This initialises the object providing the build template
+        this.productId = productId; 
+        this.dataSource = dataSource
         this.product = {};
     }
 
@@ -17,5 +17,9 @@ export default class productDetails{ //Tracks and establishes the product
 
     addProductToCart(product) {
         setLocalStorage("so-cart", product);
-        }
+    }
+
+    renderProductDetails(){
+
+    }
 }
