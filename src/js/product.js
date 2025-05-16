@@ -1,7 +1,11 @@
-
+import productDetails from "./productDetails.mjs";
 import ProductData from "./ProductData.mjs";
+import { getParam } from "./utils.mjs";
 
 const dataSource = new ProductData("tents");
+const productId = getParam(dataSource);
+const product = new productDetails(productId, dataSource);
+product.init()
 
 
 
