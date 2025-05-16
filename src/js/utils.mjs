@@ -27,3 +27,12 @@ export function setLocalStorage(key, data) {
   // Save back to localStorage
   localStorage.setItem(key, JSON.stringify(items));
 }
+
+
+export function getParam(product){
+  const queryString = window.search.location;
+  const urlParams = new URLSearchParams(queryString);
+  const productId = urlParams.get("product");
+}
+
+
