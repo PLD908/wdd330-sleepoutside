@@ -262,7 +262,6 @@ footer {
   padding: 1em;
 }
 
-
 /* Cart style */
 
 .cart-card {
@@ -354,7 +353,7 @@ footer {
 }
 
 /* Number of items in cart superscript */
-.numOfCartItems{
+.numOfCartItems {
   border: 1px solid #aa3939;
   text-align: center;
   position: absolute;
