@@ -6,3 +6,8 @@ const listElement = document.querySelector(".product-list"); // Adjust selector 
 const productList = new ProductList("tents", dataSource, listElement);
 
 productList.init();
+
+import Alert from "./alert.js";
+
+const alerts = new Alert();
+alerts.showAlerts();
