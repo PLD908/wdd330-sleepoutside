@@ -27,3 +27,14 @@ export function setLocalStorage(key, data) {
   // Save back to localStorage
   localStorage.setItem(key, JSON.stringify(items));
 }
+
+export function renderListWithTemplate(templateFn, parentElement, list, position = "afterbegin", clear = false) {
+
+  const htmlStrings = list.map(templateFn);
+
+  if (clear) {
+    parentElement.innerHTML = "";
+  };
+
+  parentElement.insertAdjacentHTML(position, htmlStrings.join(""));
+}
