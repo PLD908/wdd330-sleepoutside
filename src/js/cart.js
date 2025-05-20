@@ -1,3 +1,9 @@
+
+
+
+
+
+
 import { getLocalStorage } from "./utils.mjs";
 
 function renderCartContents() {
@@ -25,7 +31,11 @@ function renderCartContents() {
     button.addEventListener("click", () => removeFromCart(index));
     
     // check the cart again to see if it is empty
-    if (!cartItems || cartItems.length === 0) {
+    
+    return;
+    });
+  
+  if (!cartItems || cartItems.length === 0) {
     document.querySelector(".product-list").innerHTML = `
       <li class="cart-empty">
         <p>Your cart is empty</p>
@@ -35,21 +45,12 @@ function renderCartContents() {
 
     // if cart is empty do not show the cart summery
     document.querySelector(".cart-total").innerHTML = "";
-    return;
   }
-  });
 
   // Calculate and display cart total
   displayCartTotal(cartItems);
 }
 function displayCartTotal(cartItems) {
-
-    // Add checkout button event listener
-  document.getElementById("checkout-button").addEventListener("click", () => {
-    alert("Checkout functionality would go here!");
-  },
-  { once: true } // Ensures the listener runs only once
-);
 
   // Calculate total
   const total = cartItems.reduce(
@@ -57,8 +58,23 @@ function displayCartTotal(cartItems) {
     0,
   );
   document.getElementById("cart-total-amount").textContent = total.toFixed(2);
-      count ++
 
+}
+function setupCheckoutListener() {
+  const checkoutButton = document.getElementById("checkout-button");
+
+  if (!checkoutButton) {
+    console.error("Checkout button not found.");
+    return;
+  }
+
+  // Remove any previous listener before adding a fresh one
+  checkoutButton.removeEventListener("click", handleCheckoutClick);
+  checkoutButton.addEventListener("click", handleCheckoutClick);
+}
+
+function handleCheckoutClick() {
+  alert("Checkout functionality would go here!");
 }
 
 function cartItemTemplate(item) {
@@ -90,7 +106,8 @@ function removeFromCart(index) {
   renderCartContents();
 }
 
-// Initialize the cart display when the page loads
+// Initialize the cart display when the page loads and set up the checkout button event listener
 document.addEventListener("DOMContentLoaded", () => {
   renderCartContents();
+  setupCheckoutListener(); // Set up listener once
 });
