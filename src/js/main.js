@@ -1,8 +1,12 @@
 import ProductData from "./ProductData.mjs";
 import ProductList from "./ProductList.mjs";
+import { loadHeaderFooter } from "./utils.mjs";
 
-// Initialize product data and list
-const dataSource = new ProductData("tents");
-const listElement = document.querySelector(".product-list");
-const productList = new ProductList("tents", dataSource, listElement);
-productList.init();
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadHeaderFooter();
+  
+  const dataSource = new ProductData("tents");
+  const listElement = document.querySelector(".product-list");
+  const productList = new ProductList("tents", dataSource, listElement);
+  productList.init();
+});
