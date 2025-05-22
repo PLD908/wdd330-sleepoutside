@@ -22,6 +22,7 @@ export default class ProductDetails {
   renderProductDetails() {
     // Set page title
     document.title = `SleepOutside | ${this.product.Name}`;
+    img.src = this.product.Images.PrimaryLarge;
     
     // Get main elements
     const main = document.querySelector('main');
