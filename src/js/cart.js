@@ -18,7 +18,7 @@ function renderCartContents() {
     return;
   }
   
-  numberOfCartItems(); //Update number of cart-items superscript
+  numberOfCartItems(); // Update number of cart-items superscript
   const htmlItems = cartItems.map((item) => cartItemTemplate(item));
   document.querySelector(".product-list").innerHTML = htmlItems.join("");
 
@@ -46,6 +46,7 @@ function renderCartContents() {
   // Calculate and display cart total
   displayCartTotal(cartItems);
 }
+
 function displayCartTotal(cartItems) {
 
   // Calculate total
@@ -100,6 +101,7 @@ function removeFromCart(index) {
   cartItems.splice(index, 1);
   localStorage.setItem("so-cart", JSON.stringify(cartItems));
   renderCartContents();
+  numberOfCartItems(); // Update number of cart-items superscript immediately after button clicked
 }
 
 // Initialize the cart display when the page loads and set up the checkout button event listener
