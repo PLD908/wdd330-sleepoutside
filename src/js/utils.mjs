@@ -59,7 +59,7 @@ export async function loadTemplate(path) {
 
 // This function loads the header and footer templates
 // and puts them into the right spots in the page
-export async function loadHeaderFooter() {
+export async function loadHeaderFooter(callback) {
   // Load the HTML from the partials folder
   const headerTemplate = await loadTemplate('/partials/header.html');
   const footerTemplate = await loadTemplate('/partials/footer.html');
@@ -71,4 +71,10 @@ export async function loadHeaderFooter() {
   // Add the templates to the page
   renderWithTemplate(headerTemplate, headerElement);
   renderWithTemplate(footerTemplate, footerElement);
+
+  
+  //Run callback AFTER header and footer are inserted
+  if (callback) {
+    callback();
+  }
 }

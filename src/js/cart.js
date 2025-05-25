@@ -1,9 +1,4 @@
-
-
-
-
-
-
+import { numberOfCartItems } from "./cartItems";
 import { getLocalStorage } from "./utils.mjs";
 
 function renderCartContents() {
@@ -23,6 +18,7 @@ function renderCartContents() {
     return;
   }
 
+   numberOfCartItems(); //Update number of cart-items superscript
   const htmlItems = cartItems.map((item) => cartItemTemplate(item));
   document.querySelector(".product-list").innerHTML = htmlItems.join("");
 
