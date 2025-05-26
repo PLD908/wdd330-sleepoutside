@@ -1,10 +1,8 @@
 import { numberOfCartItems } from "./cartItems";
 import { getLocalStorage } from "./utils.mjs";
-
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart");
 
-  // Check if cart is empty
   if (!cartItems || cartItems.length === 0) {
     document.querySelector(".product-list").innerHTML = `
       <li class="cart-empty">
@@ -12,86 +10,96 @@ function renderCartContents() {
         <p>Continue shopping <a href="../index.html">here</a></p>
       </li>
     `;
-
-      // if cart is empty do not show the cart summery
-        document.querySelector(".cart-total").innerHTML = "";
+    document.querySelector(".cart-total").innerHTML = "";
+    numberOfCartItems();
     return;
   }
 
-   numberOfCartItems(); //Update number of cart-items superscript
-  const htmlItems = cartItems.map((item) => cartItemTemplate(item));
+  numberOfCartItems();
+  const htmlItems = cartItems.map((item, index) => cartItemTemplate(item, index));
   document.querySelector(".product-list").innerHTML = htmlItems.join("");
 
-  // Add event listeners to remove buttons
-  document.querySelectorAll(".cart-card__remove").forEach((button, index) => {
-    button.addEventListener("click", () => removeFromCart(index));
-    
-    // check the cart again to see if it is empty
-    
-    return;
-    });
-  
-  if (!cartItems || cartItems.length === 0) {
-    document.querySelector(".product-list").innerHTML = `
-      <li class="cart-empty">
-        <p>Your cart is empty</p>
-        <p>Continue shopping <a href="../index.html">here</a></p>
-      </li>
-    `;
-
-    // if cart is empty do not show the cart summery
-    document.querySelector(".cart-total").innerHTML = "";
-  }
-
-  // Calculate and display cart total
   displayCartTotal(cartItems);
+  setupEventListeners(); // **Ensure event listeners reattach after rerender**
 }
+
 function displayCartTotal(cartItems) {
-
-  // Calculate total
   const total = cartItems.reduce(
-    (sum, item) => sum + parseFloat(item.FinalPrice),
-    0,
+    (sum, item) => sum + parseFloat(item.FinalPrice) * (item.quantity || 1),
+    0
   );
+
   document.getElementById("cart-total-amount").textContent = total.toFixed(2);
-
 }
-function setupCheckoutListener() {
+
+function setupEventListeners() {
+  document.querySelectorAll(".cart-card__quantity__down, .cart-card__quantity__up").forEach((button) => {
+    button.removeEventListener("click", updateQuantityHandler);
+    button.addEventListener("click", updateQuantityHandler);
+  });
+
+  document.querySelectorAll(".cart-card__remove").forEach((button) => {
+    button.removeEventListener("click", removeItemHandler);
+    button.addEventListener("click", removeItemHandler);
+  });
+
   const checkoutButton = document.getElementById("checkout-button");
-
-  if (!checkoutButton) {
-    console.error("Checkout button not found.");
-    return;
+  if (checkoutButton) {
+    checkoutButton.removeEventListener("click", handleCheckoutClick);
+    checkoutButton.addEventListener("click", handleCheckoutClick);
   }
-
-  // Remove any previous listener before adding a fresh one
-  checkoutButton.removeEventListener("click", handleCheckoutClick);
-  checkoutButton.addEventListener("click", handleCheckoutClick);
 }
 
 function handleCheckoutClick() {
   alert("Checkout functionality would go here!");
 }
 
-function cartItemTemplate(item) {
+function updateQuantityHandler(event) {
+  const index = parseInt(event.target.dataset.index, 10);
+  console.log("Updating quantity for index:", index); // Debugging
+  const change = event.target.classList.contains("cart-card__quantity__up") ? 1 : -1;
+  updateQuantity(index, change);
+}
+
+function updateQuantity(index, change) {
+  const cartItems = getLocalStorage("so-cart");
+
+  if (cartItems[index]) {
+    cartItems[index].quantity = Math.max(1, (cartItems[index].quantity || 1) + change);
+    localStorage.setItem("so-cart", JSON.stringify(cartItems));
+    renderCartContents();
+    setupEventListeners(); // **Ensure listeners reattach after updating quantity**
+  }
+}
+
+function removeItemHandler(event) {
+  const index = parseInt(event.target.dataset.index, 10);
+  console.log("Remove clicked for index:", index); // Debugging to check if click is detected
+
+  if (!isNaN(index)) {
+    removeFromCart(index);
+  } else {
+    console.error("Invalid index detected in removeItemHandler");
+  }
+}
+
+function cartItemTemplate(item, index) {
   const newItem = `<li class="cart-card divider">
     <a href="#" class="cart-card__image">
-      <img
-        src="${item.Image}"
-        alt="${item.Name}"
-      />
+      <img src="${item.Image}" alt="${item.Name}" />
     </a>
     <div class="cart-card__details">
-      <a href="#">
-        <h2 class="card__name">${item.Name}</h2>
-      </a>
+      <a href="#"><h2 class="card__name">${item.Name}</h2></a>
       <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-      <p class="cart-card__quantity">qty: 1</p>
+      <p class="cart-card__quantity">qty: ${item.quantity || 1}</p>
+      <div class="cart-card__quantity__buttons">
+        <button class="cart-card__quantity__down" data-index="${index}">-</button>
+        <button class="cart-card__quantity__up" data-index="${index}">+</button>
+      </div>
       <p class="cart-card__price">$${item.FinalPrice}</p>
-      <button class="cart-card__remove">Remove</button>
+      <button class="cart-card__remove" data-index="${index}">Remove</button>
     </div>
   </li>`;
-
   return newItem;
 }
 
@@ -100,11 +108,12 @@ function removeFromCart(index) {
   cartItems.splice(index, 1);
   localStorage.setItem("so-cart", JSON.stringify(cartItems));
   renderCartContents();
-  numberOfCartItems(); // Update cart count immediately after an item is removed from the cart
+  setupEventListeners(); // **Reattach listeners after item removal**
+  numberOfCartItems();
 }
 
-// Initialize the cart display when the page loads and set up the checkout button event listener
+// Initialize the cart display when the page loads and set up the event listeners
 document.addEventListener("DOMContentLoaded", () => {
   renderCartContents();
-  setupCheckoutListener(); // Set up listener once
+  setupEventListeners(); // Ensure all event listeners are attached
 });
