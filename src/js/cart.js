@@ -22,30 +22,10 @@ function renderCartContents() {
   const htmlItems = cartItems.map((item) => cartItemTemplate(item));
   document.querySelector(".product-list").innerHTML = htmlItems.join("");
 
-  // Add event listeners to remove buttons
-  document.querySelectorAll(".cart-card__remove").forEach((button, index) => {
-    button.addEventListener("click", () => removeFromCart(index));
-    
-    // check the cart again to see if it is empty
-    
-    return;
-    });
-  
-  if (!cartItems || cartItems.length === 0) {
-    document.querySelector(".product-list").innerHTML = `
-      <li class="cart-empty">
-        <p>Your cart is empty</p>
-        <p>Continue shopping <a href="../index.html">here</a></p>
-      </li>
-    `;
-
-    // if cart is empty do not show the cart summery
-    document.querySelector(".cart-total").innerHTML = "";
-  }
-
-  // Calculate and display cart total
   displayCartTotal(cartItems);
-}
+  setupCartEventListeners(); // Attach event listeners after rendering
+};
+
 function displayCartTotal(cartItems) {
 
   // Calculate total
@@ -54,46 +34,57 @@ function displayCartTotal(cartItems) {
     0,
   );
   document.getElementById("cart-total-amount").textContent = total.toFixed(2);
+};
 
-}
-function setupCheckoutListener() {
+function setupCartEventListeners() {
+  document.querySelectorAll(".cart-card__quantity__down").forEach((button) => {
+    button.removeEventListener("click", updateQuantityHandler);
+    button.addEventListener("click", updateQuantityHandler);
+  });
+
+  document.querySelectorAll(".cart-card__quantity__up").forEach((button) => {
+    button.removeEventListener("click", updateQuantityHandler);
+    button.addEventListener("click", updateQuantityHandler);
+  });
+
+  document.querySelectorAll(".cart-card__remove").forEach((button) => {
+    button.removeEventListener("click", removeItemHandler);
+    button.addEventListener("click", removeItemHandler);
+  });
+
   const checkoutButton = document.getElementById("checkout-button");
-
-  if (!checkoutButton) {
-    console.error("Checkout button not found.");
-    return;
+  if (checkoutButton) {
+    checkoutButton.removeEventListener("click", handleCheckoutClick);
+    checkoutButton.addEventListener("click", handleCheckoutClick);
   }
+};
 
-  // Remove any previous listener before adding a fresh one
-  checkoutButton.removeEventListener("click", handleCheckoutClick);
-  checkoutButton.addEventListener("click", handleCheckoutClick);
-}
+function updateQuantityHandler(event) {
+  const index = parseInt(event.target.dataset.index, 10);
+  let change;
+  if (event.target.classList.contains("cart-card__quantity__up")) {
+    change = 1; // Increase quantity
+  } else {
+    change = -1; // Decrease quantity
+  }
+  updateQuantity(index, change);
+};
 
-function handleCheckoutClick() {
-  alert("Checkout functionality would go here!");
-}
 
-function cartItemTemplate(item) {
-  const newItem = `<li class="cart-card divider">
-    <a href="#" class="cart-card__image">
-      <img
-        src="${item.Image}"
-        alt="${item.Name}"
-      />
-    </a>
-    <div class="cart-card__details">
-      <a href="#">
-        <h2 class="card__name">${item.Name}</h2>
-      </a>
-      <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-      <p class="cart-card__quantity">qty: 1</p>
-      <p class="cart-card__price">$${item.FinalPrice}</p>
-      <button class="cart-card__remove">Remove</button>
-    </div>
-  </li>`;
+function updateQuantity(index, change) {
+  const cartItems = getLocalStorage("so-cart");
 
-  return newItem;
-}
+  if (cartItems[index]) {
+    cartItems[index].quantity = Math.max(1, (cartItems[index].quantity || 1) + change);
+    localStorage.setItem("so-cart", JSON.stringify(cartItems));
+    renderCartContents();
+  }
+};
+
+function removeItemHandler(event) {
+  const index = parseInt(event.target.dataset.index, 10);
+  removeFromCart(index);
+};
 
 function removeFromCart(index) {
   const cartItems = getLocalStorage("so-cart");
@@ -103,8 +94,35 @@ function removeFromCart(index) {
   numberOfCartItems(); // Update cart count immediately after an item is removed from the cart
 }
 
-// Initialize the cart display when the page loads and set up the checkout button event listener
+function handleCheckoutClick() {
+  alert("Checkout functionality would go here!");
+};
+
+function cartItemTemplate(item, index) {
+  const newItem = `<li class="cart-card divider">
+    <a href="#" class="cart-card__image">
+      <img src="${item.Image}" alt="${item.Name}" />
+    </a>
+    <div class="cart-card__details">
+      <a href="#">
+        <h2 class="card__name">${item.Name}</h2>
+      </a>
+      <p class="cart-card__color">${item.Colors[0].ColorName}</p>
+      <p class="cart-card__quantity">qty: ${item.quantity || 1}</p>
+      <div class="cart-card__quantity__buttons">
+        <button class="cart-card__quantity__down" data-index="${index}">-</button>
+        <button class="cart-card__quantity__up" data-index="${index}">+</button>
+      </div>
+      <p class="cart-card__price">$${item.FinalPrice}</p>
+      <button class="cart-card__remove" data-index="${index}">Remove</button>
+    </div>
+  </li>`;
+
+  return newItem;
+};
+
+// Initialize the cart display when the page loads and set up event listeners
 document.addEventListener("DOMContentLoaded", () => {
   renderCartContents();
-  setupCheckoutListener(); // Set up listener once
+  setupCartEventListeners();
 });
