@@ -156,14 +156,14 @@ button {
   padding: 1rem;
 }
 
-.product-list {
+.product-lists {
   display: flex;
   flex-flow: row wrap;
   list-style-type: none;
   justify-content: center;
 }
 
-.product-list a {
+.product-lists a {
   text-decoration: none;
   color: var(--dark-grey);
 }
