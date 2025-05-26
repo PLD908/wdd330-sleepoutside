@@ -21,19 +21,23 @@ function renderCartContents() {
 
   displayCartTotal(cartItems);
   setupEventListeners(); // **Ensure event listeners reattach after rerender**
-}
+};
 
 function displayCartTotal(cartItems) {
   const total = cartItems.reduce(
     (sum, item) => sum + parseFloat(item.FinalPrice) * (item.quantity || 1),
     0
   );
-
   document.getElementById("cart-total-amount").textContent = total.toFixed(2);
 }
 
 function setupEventListeners() {
-  document.querySelectorAll(".cart-card__quantity__down, .cart-card__quantity__up").forEach((button) => {
+  document.querySelectorAll(".cart-card__quantity__down").forEach((button) => {
+    button.removeEventListener("click", updateQuantityHandler);
+    button.addEventListener("click", updateQuantityHandler);
+  });
+
+  document.querySelectorAll(".cart-card__quantity__up").forEach((button) => {
     button.removeEventListener("click", updateQuantityHandler);
     button.addEventListener("click", updateQuantityHandler);
   });
@@ -50,16 +54,17 @@ function setupEventListeners() {
   }
 }
 
-function handleCheckoutClick() {
-  alert("Checkout functionality would go here!");
-}
 
 function updateQuantityHandler(event) {
   const index = parseInt(event.target.dataset.index, 10);
-  console.log("Updating quantity for index:", index); // Debugging
-  const change = event.target.classList.contains("cart-card__quantity__up") ? 1 : -1;
+  let change;
+  if (event.target.classList.contains("cart-card__quantity__up")) {
+    change = 1; // Increase quantity
+  } else {
+    change = -1; // Decrease quantity
+  }
   updateQuantity(index, change);
-}
+};
 
 function updateQuantity(index, change) {
   const cartItems = getLocalStorage("so-cart");
@@ -74,34 +79,8 @@ function updateQuantity(index, change) {
 
 function removeItemHandler(event) {
   const index = parseInt(event.target.dataset.index, 10);
-  console.log("Remove clicked for index:", index); // Debugging to check if click is detected
-
-  if (!isNaN(index)) {
-    removeFromCart(index);
-  } else {
-    console.error("Invalid index detected in removeItemHandler");
-  }
-}
-
-function cartItemTemplate(item, index) {
-  const newItem = `<li class="cart-card divider">
-    <a href="#" class="cart-card__image">
-      <img src="${item.Image}" alt="${item.Name}" />
-    </a>
-    <div class="cart-card__details">
-      <a href="#"><h2 class="card__name">${item.Name}</h2></a>
-      <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-      <p class="cart-card__quantity">qty: ${item.quantity || 1}</p>
-      <div class="cart-card__quantity__buttons">
-        <button class="cart-card__quantity__down" data-index="${index}">-</button>
-        <button class="cart-card__quantity__up" data-index="${index}">+</button>
-      </div>
-      <p class="cart-card__price">$${item.FinalPrice}</p>
-      <button class="cart-card__remove" data-index="${index}">Remove</button>
-    </div>
-  </li>`;
-  return newItem;
-}
+  removeFromCart(index);
+};
 
 function removeFromCart(index) {
   const cartItems = getLocalStorage("so-cart");
@@ -112,8 +91,35 @@ function removeFromCart(index) {
   numberOfCartItems();
 }
 
-// Initialize the cart display when the page loads and set up the event listeners
+function handleCheckoutClick() {
+  alert("Checkout functionality would go here!");
+};
+
+function cartItemTemplate(item, index) {
+  const newItem = `<li class="cart-card divider">
+    <a href="#" class="cart-card__image">
+      <img src="${item.Image}" alt="${item.Name}" />
+    </a>
+    <div class="cart-card__details">
+      <a href="#">
+        <h2 class="card__name">${item.Name}</h2>
+      </a>
+      <p class="cart-card__color">${item.Colors[0].ColorName}</p>
+      <p class="cart-card__quantity">qty: ${item.quantity || 1}</p>
+      <div class="cart-card__quantity__buttons">
+        <button class="cart-card__quantity__down" data-index="${index}">-</button>
+        <button class="cart-card__quantity__up" data-index="${index}">+</button>
+      </div>
+      <p class="cart-card__price">$${item.FinalPrice}</p>
+      <button class="cart-card__remove" data-index="${index}">Remove</button>
+    </div>
+  </li>`;
+
+  return newItem;
+};
+
+// Initialize the cart display when the page loads and set up event listeners
 document.addEventListener("DOMContentLoaded", () => {
   renderCartContents();
-  setupEventListeners(); // Ensure all event listeners are attached
+  setupEventListeners();
 });
