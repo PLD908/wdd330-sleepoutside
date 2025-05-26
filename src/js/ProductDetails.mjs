@@ -1,4 +1,5 @@
 import { setLocalStorage } from './utils.mjs';
+import { numberOfCartItems } from './cartItems';
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
@@ -47,7 +48,9 @@ export default class ProductDetails {
       return;
     }
     console.log('Adding to cart:', this.product);
+    
     setLocalStorage('so-cart', this.product);
+    numberOfCartItems(); //Updates the cart superscript number of items
     alert('Item added to cart!');
     console.log('Cart updated in localStorage:', getLocalStorage('so-cart'));
   }

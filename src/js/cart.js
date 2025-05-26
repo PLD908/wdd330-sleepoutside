@@ -1,3 +1,4 @@
+import { numberOfCartItems } from "./cartItems";
 import { getLocalStorage } from "./utils.mjs";
 
 function renderCartContents() {
@@ -12,12 +13,13 @@ function renderCartContents() {
       </li>
     `;
 
-    // if cart is empty do not show the cart summery
-    document.querySelector(".cart-total").innerHTML = "";
+      // if cart is empty do not show the cart summery
+        document.querySelector(".cart-total").innerHTML = "";
     return;
   }
 
-  const htmlItems = cartItems.map((item, index) => cartItemTemplate(item, index));
+   numberOfCartItems(); //Update number of cart-items superscript
+  const htmlItems = cartItems.map((item) => cartItemTemplate(item));
   document.querySelector(".product-list").innerHTML = htmlItems.join("");
 
   displayCartTotal(cartItems);
@@ -89,7 +91,8 @@ function removeFromCart(index) {
   cartItems.splice(index, 1);
   localStorage.setItem("so-cart", JSON.stringify(cartItems));
   renderCartContents();
-};
+  numberOfCartItems(); // Update cart count immediately after an item is removed from the cart
+}
 
 function handleCheckoutClick() {
   alert("Checkout functionality would go here!");

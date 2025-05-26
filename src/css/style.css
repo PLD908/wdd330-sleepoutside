@@ -156,14 +156,14 @@ button {
   padding: 1rem;
 }
 
-.product-list {
+.product-lists {
   display: flex;
   flex-flow: row wrap;
   list-style-type: none;
   justify-content: center;
 }
 
-.product-list a {
+.product-lists a {
   text-decoration: none;
   color: var(--dark-grey);
 }
@@ -381,4 +381,19 @@ footer {
 
 .checkout-button:hover {
   background-color: #303030;
+}
+
+/* Number of items in cart superscript */
+.numOfCartItems {
+  border: 1px solid #aa3939;
+  text-align: center;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  background-color: #f6bc7d;
+  font-size: 13px;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  border: none;
 }
