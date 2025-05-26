@@ -1,10 +1,8 @@
 import { numberOfCartItems } from "./cartItems";
 import { getLocalStorage } from "./utils.mjs";
-
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart");
 
-  // Check if cart is empty
   if (!cartItems || cartItems.length === 0) {
     document.querySelector(".product-list").innerHTML = `
       <li class="cart-empty">
@@ -12,31 +10,28 @@ function renderCartContents() {
         <p>Continue shopping <a href="../index.html">here</a></p>
       </li>
     `;
-
-      // if cart is empty do not show the cart summery
-        document.querySelector(".cart-total").innerHTML = "";
+    document.querySelector(".cart-total").innerHTML = "";
+    numberOfCartItems();
     return;
   }
 
-   numberOfCartItems(); //Update number of cart-items superscript
-  const htmlItems = cartItems.map((item) => cartItemTemplate(item));
+  numberOfCartItems();
+  const htmlItems = cartItems.map((item, index) => cartItemTemplate(item, index));
   document.querySelector(".product-list").innerHTML = htmlItems.join("");
 
   displayCartTotal(cartItems);
-  setupCartEventListeners(); // Attach event listeners after rendering
+  setupEventListeners(); // **Ensure event listeners reattach after rerender**
 };
 
 function displayCartTotal(cartItems) {
-
-  // Calculate total
   const total = cartItems.reduce(
-    (sum, item) => sum + parseFloat(item.FinalPrice),
-    0,
+    (sum, item) => sum + parseFloat(item.FinalPrice) * (item.quantity || 1),
+    0
   );
   document.getElementById("cart-total-amount").textContent = total.toFixed(2);
-};
+}
 
-function setupCartEventListeners() {
+function setupEventListeners() {
   document.querySelectorAll(".cart-card__quantity__down").forEach((button) => {
     button.removeEventListener("click", updateQuantityHandler);
     button.addEventListener("click", updateQuantityHandler);
@@ -57,7 +52,8 @@ function setupCartEventListeners() {
     checkoutButton.removeEventListener("click", handleCheckoutClick);
     checkoutButton.addEventListener("click", handleCheckoutClick);
   }
-};
+}
+
 
 function updateQuantityHandler(event) {
   const index = parseInt(event.target.dataset.index, 10);
@@ -70,7 +66,6 @@ function updateQuantityHandler(event) {
   updateQuantity(index, change);
 };
 
-
 function updateQuantity(index, change) {
   const cartItems = getLocalStorage("so-cart");
 
@@ -78,8 +73,9 @@ function updateQuantity(index, change) {
     cartItems[index].quantity = Math.max(1, (cartItems[index].quantity || 1) + change);
     localStorage.setItem("so-cart", JSON.stringify(cartItems));
     renderCartContents();
+    setupEventListeners(); // **Ensure listeners reattach after updating quantity**
   }
-};
+}
 
 function removeItemHandler(event) {
   const index = parseInt(event.target.dataset.index, 10);
@@ -91,7 +87,8 @@ function removeFromCart(index) {
   cartItems.splice(index, 1);
   localStorage.setItem("so-cart", JSON.stringify(cartItems));
   renderCartContents();
-  numberOfCartItems(); // Update cart count immediately after an item is removed from the cart
+  setupEventListeners(); // **Reattach listeners after item removal**
+  numberOfCartItems();
 }
 
 function handleCheckoutClick() {
@@ -124,5 +121,5 @@ function cartItemTemplate(item, index) {
 // Initialize the cart display when the page loads and set up event listeners
 document.addEventListener("DOMContentLoaded", () => {
   renderCartContents();
-  setupCartEventListeners();
+  setupEventListeners();
 });
