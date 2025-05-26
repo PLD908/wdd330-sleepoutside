@@ -100,6 +100,7 @@ function removeFromCart(index) {
   cartItems.splice(index, 1);
   localStorage.setItem("so-cart", JSON.stringify(cartItems));
   renderCartContents();
+  numberOfCartItems(); // Update cart count immediately after an item is removed from the cart
 }
 
 // Initialize the cart display when the page loads and set up the checkout button event listener
