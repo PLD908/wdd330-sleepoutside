@@ -397,3 +397,33 @@ footer {
   border-radius: 50%;
   border: none;
 }
+
+/* categories */
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: 1em 0;
+  gap: 3em;
+}
+
+.categories :is(.category-tents, .category-sleeping-bags, .category-backpacks, .category-hammocks) {
+  text-align: center;
+  margin: 1em;
+  cursor: pointer;
+}
+
+.categories img {
+  width: 80px;
+  height: auto;
+}
+
+.categories h3 {
+  margin: 0.5em 0 0 0;
+}
+
+a {
+  text-decoration: none;
+  color: var(--dark-grey);
+}
