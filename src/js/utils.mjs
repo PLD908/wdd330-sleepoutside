@@ -60,3 +60,31 @@ export function renderListWithTemplate(templateFn, parentElement, list, position
   const html = list.map(templateFn).join('');
   parentElement.insertAdjacentHTML(position, html);
 }
+
+export function addToCart(product) {
+  let cartItems = getLocalStorage('so-cart') || [];
+  
+  // Check if product already exists in cart
+  const existingItem = cartItems.find(item => item.Id === product.Id);
+  
+  if (existingItem) {
+    existingItem.quantity = (existingItem.quantity || 1) + 1;
+  } else {
+    cartItems.push({...product, quantity: 1});
+  }
+  
+  setLocalStorage('so-cart', cartItems);
+  
+  // Optional: Show a notification
+  const notification = document.createElement('div');
+  notification.className = 'cart-notification';
+  notification.textContent = `${product.Name} added to cart!`;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.remove();
+  }, 3000);
+  
+  // Update cart count
+  updateCartCount();
+}
