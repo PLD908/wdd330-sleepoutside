@@ -1,6 +1,9 @@
 import { setLocalStorage } from './utils.mjs';
 import { numberOfCartItems } from './cartItems';
 
+
+const baseURL = import.meta.env.VITE_SERVER_URL
+
 export default class ProductDetails {
   constructor(productId, dataSource) {
     this.productId = productId;
@@ -20,7 +23,7 @@ export default class ProductDetails {
     console.log('Initializing ProductDetails for productId:', this.productId);
 
     try {
-      this.product = await this.dataSource.findProductById(this.productId);
+      this.product = await this.dataSource.findProductById(`${baseURL}product/${id}`);
       if (!this.product) {
         console.error('Product not found for ID:', this.productId);
         return;
@@ -63,7 +66,7 @@ export default class ProductDetails {
     const colorElement = document.querySelector('.product__color');
 
     if (nameElement) nameElement.textContent = this.product.Name || 'Unknown Product';
-    if (imageElement) imageElement.src = this.product.Image || '';
+    if (imageElement) imageElement.src = this.product.Images.PrimaryLarge || '';
     if (priceElement) priceElement.textContent = `$${this.product.ListPrice || '0.00'}`;
     if (descriptionElement) {
       // Strip HTML tags and set plain text
