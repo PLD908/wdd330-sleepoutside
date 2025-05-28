@@ -9,8 +9,10 @@ export default defineConfig({
         main: resolve(__dirname, "src/index.html"),
         cart: resolve(__dirname, "src/cart/index.html"),
         checkout: resolve(__dirname, "src/checkout/index.html"),
+        success: resolve(__dirname, "src/checkout/success.html"),
         product: resolve(__dirname, "src/product_pages/index.html"),
-        product_listing: resolve(__dirname, "src/product_listing/index.html")
+        product_listing: resolve(__dirname, "src/product_listing/index.html"),
+        search: resolve(__dirname, "src/search/index.html")
       },
     },
   },
