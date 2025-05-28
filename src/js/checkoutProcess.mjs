@@ -99,5 +99,61 @@ export default class CheckoutProcess {
       console.error(err);
       alert('There was an error processing your order. Please try again.');
     }
+
+    
+
   }
+
+  async checkout(form) {
+  const myForm = document.forms.checkoutForm;
+  const isValid = myForm.checkValidity();
+  myForm.reportValidity();
+  
+  if (!isValid) return;
+
+  const formData = new FormData(form);
+  const jsonData = {};
+  formData.forEach((value, key) => {
+    jsonData[key] = value;
+  });
+  
+  const order = {
+    ...jsonData,
+    orderDate: new Date().toISOString(),
+    items: this.packageItems(),
+    orderTotal: this.orderTotal.toFixed(2),
+    shipping: this.shipping,
+    tax: this.tax.toFixed(2)
+  };
+  
+  try {
+    const response = await this.services.checkout(order);
+    if (response.success) {
+      localStorage.removeItem(this.key);
+      window.location.href = '/checkout/success.html';
+    } else {
+      throw new Error(response.message || 'Order failed');
+    }
+  } catch (err) {
+    console.error('Checkout error:', err);
+    
+    let errorMessage = 'There was an error processing your order.';
+    if (err.name === 'servicesError') {
+      errorMessage = err.message;
+      
+      // Handle specific field errors if available
+      if (err.details.errors) {
+        Object.entries(err.details.errors).forEach(([field, message]) => {
+          const input = document.querySelector(`[name="${field}"]`);
+          if (input) {
+            input.setCustomValidity(message);
+            input.reportValidity();
+          }
+        });
+      }
+    }
+    
+    alert(errorMessage);
+  }
+}
 }
