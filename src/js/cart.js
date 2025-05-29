@@ -91,10 +91,6 @@ function removeFromCart(index) {
   numberOfCartItems();
 }
 
-function handleCheckoutClick() {
-  alert("Checkout functionality would go here!");
-};
-
 function cartItemTemplate(item, index) {
   const newItem = `<li class="cart-card divider">
     <a href="#" class="cart-card__image">

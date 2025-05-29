@@ -1,5 +1,5 @@
 import { setLocalStorage } from './utils.mjs';
-import { numberOfCartItems } from './cartItems';
+import { numberOfCartItems } from './cartItems.js';
 
 
 const baseURL = import.meta.env.VITE_SERVER_URL
@@ -23,7 +23,7 @@ export default class ProductDetails {
     console.log('Initializing ProductDetails for productId:', this.productId);
 
     try {
-      this.product = await this.dataSource.findProductById(`${baseURL}product/${id}`);
+      this.product = await this.dataSource.findProductById(`${baseURL}product/${this.productId}`);
       if (!this.product) {
         console.error('Product not found for ID:', this.productId);
         return;
