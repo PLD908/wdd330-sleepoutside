@@ -31,3 +31,50 @@ export function renderListWithTemplate(templateFn, parentElement, list, position
   const htmlStrings = list.map(templateFn);
   parentElement.insertAdjacentHTML(position, htmlStrings.join(''));
 }
+
+// This function puts some HTML (the template) into a part of the page (parentElement)
+// If there's a callback function, it runs that too after rendering
+export function renderWithTemplate(template, parentElement, data, callback) {
+  if (!parentElement) {
+    console.error("Parent element is null or undefined");
+    return;
+  }
+
+  // Put the HTML into the page
+  parentElement.innerHTML = template;
+
+  // If a callback is given, run it
+  if (callback) {
+    callback(data);
+  }
+}
+
+// This function loads an HTML file from the given path
+// and returns it as a string
+export async function loadTemplate(path) {
+  const response = await fetch(path);     // get the file
+  const template = await response.text(); // turn it into text
+  return template;                        // send it back
+}
+
+// This function loads the header and footer templates
+// and puts them into the right spots in the page
+export async function loadHeaderFooter(callback) {
+  // Load the HTML from the partials folder
+  const headerTemplate = await loadTemplate('/partials/header.html');
+  const footerTemplate = await loadTemplate('/partials/footer.html');
+
+  // Find where to put the header and footer in the page
+  const headerElement = document.querySelector('#main-header');
+  const footerElement = document.querySelector('#main-footer');
+
+  // Add the templates to the page
+  renderWithTemplate(headerTemplate, headerElement);
+  renderWithTemplate(footerTemplate, footerElement);
+
+  
+  //Run callback AFTER header and footer are inserted
+  if (callback) {
+    callback();
+  }
+}
