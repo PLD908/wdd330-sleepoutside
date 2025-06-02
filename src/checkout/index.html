@@ -80,31 +80,38 @@
   <footer id="main-footer"></footer>
   <script type="module" src="../js/main.js"></script>
   <script type="module">
-  import CheckoutProcess from '../js/CheckoutProcess.mjs';
+    import CheckoutProcess from '../js/CheckoutProcess.mjs';
 
-  const checkout = new CheckoutProcess('so-cart', '.order-summary');
-  checkout.init();
+    const checkout = new CheckoutProcess('so-cart', '.order-summary');
+    checkout.init();
 
-  document.querySelector('input[name="zip"]').addEventListener('change', () => {
-    checkout.calculateOrderTotal();
-  });
+    document.querySelector('input[name="zip"]').addEventListener('change', () => {
+      checkout.calculateOrderTotal();
+    });
 
-  document.getElementById('checkout-form').addEventListener('submit', async function (e) {
-    e.preventDefault();
-    if (!this.checkValidity()) {
-      alert('Please fill out all fields correctly.');
+    document.getElementById('checkout-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      if (!this.checkValidity()) {
+        alert('Please fill out all fields correctly.');
+        return;
+      }
+      checkout.calculateOrderTotal();
+      try {
+        const result = await checkout.checkout(this);
+        alert('Order placed! Confirmation: ' + JSON.stringify(result));
+        // Optionally, redirect or clear cart here
+      } catch (err) {
+        alert('Checkout failed: ' + err.message);
+      }
+    });
+
+    const myForm = document.getElementById('checkout-form');
+    if (!myForm.checkValidity()) {
+      myForm.reportValidity();
       return;
     }
-    checkout.calculateOrderTotal();
-    try {
-      const result = await checkout.checkout(this);
-      alert('Order placed! Confirmation: ' + JSON.stringify(result));
-      // Optionally, redirect or clear cart here
-    } catch (err) {
-      alert('Checkout failed: ' + err.message);
-    }
-  });
-</script>
+    checkout.checkout(myForm);
+  </script>
 </body>
 
 </html>
