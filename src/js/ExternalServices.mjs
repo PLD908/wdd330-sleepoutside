@@ -14,8 +14,15 @@ export default class ExternalServices {
     this.category = category;
     this.path = `/json/${this.category}.json`;
   }
-  async getData(category) {
-    const response = await fetch(`${baseURL}products/search/${category} `);
+    async getData(category) {
+    // If no category, fetch all products
+    let url;
+    if (category) {
+      url = `${baseURL}products/search/${category}`;
+    } else {
+      url = `${baseURL}products`;
+    }
+    const response = await fetch(url);
     const data = await convertToJson(response);
     return data.Result;
   }

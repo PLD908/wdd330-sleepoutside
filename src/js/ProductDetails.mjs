@@ -1,4 +1,4 @@
-import { setLocalStorage } from './utils.mjs';
+import { setLocalStorage, getLocalStorage } from './utils.mjs';
 import { numberOfCartItems } from './cartItems.js';
 
 
@@ -23,7 +23,7 @@ export default class ProductDetails {
     console.log('Initializing ProductDetails for productId:', this.productId);
 
     try {
-      this.product = await this.dataSource.findProductById(`${baseURL}product/${this.productId}`);
+      this.product = await this.dataSource.findProductById(this.productId);
       if (!this.product) {
         console.error('Product not found for ID:', this.productId);
         return;
@@ -45,25 +45,36 @@ export default class ProductDetails {
     }
   }
 
-  addProductToCart() {
+    addProductToCart() {
     if (!this.product || !this.product.Id) {
       console.error('No valid product data available to add to cart:', this.product);
       return;
     }
-    console.log('Adding to cart:', this.product);
-    
-    setLocalStorage('so-cart', this.product);
-    numberOfCartItems(); //Updates the cart superscript number of items
+    if (!this.product.quantity) this.product.quantity = 1;
+  
+    // Get current cart or start a new one
+    let cart = getLocalStorage('so-cart') || [];
+    // Check if product already in cart
+    const existing = cart.find(item => item.Id === this.product.Id);
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push({...this.product});
+    }
+    setLocalStorage('so-cart', cart);
+    numberOfCartItems();
     alert('Item added to cart!');
-    console.log('Cart updated in localStorage:', getLocalStorage('so-cart'));
+    console.log('Cart updated in localStorage:', cart);
   }
 
   renderProductDetails() {
-    const nameElement = document.querySelector('.product-detail h2');
-    const imageElement = document.querySelector('.product-detail img');
-    const priceElement = document.querySelector('.product-card__price');
-    const descriptionElement = document.querySelector('.product__description');
-    const colorElement = document.querySelector('.product__color');
+      document.querySelector('.card__brand').textContent = this.product.Brand?.Name || '';
+      document.querySelector('.card__name').textContent = this.product.NameWithoutBrand || '';
+      document.querySelector('.product-detail img').src = this.product.Images?.PrimaryLarge || '';
+      document.querySelector('.product-detail img').alt = this.product.Name || '';
+      document.querySelector('.product-card__price').textContent = `$${this.product.ListPrice || '0.00'}`;
+      document.querySelector('.product__color').textContent = this.product.Colors?.[0]?.ColorName || '';
+      document.querySelector('.product__description').textContent = this.product.DescriptionHtmlSimple?.replace(/<[^>]+>/g, '') || '';
 
     if (nameElement) nameElement.textContent = this.product.Name || 'Unknown Product';
     if (imageElement) imageElement.src = this.product.Images.PrimaryLarge || '';
