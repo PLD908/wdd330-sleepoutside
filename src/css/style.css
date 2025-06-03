@@ -569,3 +569,68 @@ input:invalid {
   border-color: #aa3939;
   background: #fff0f0;
 }
+
+.newsletter-icon img{
+  width: 50px;
+  position: fixed;
+  bottom: 20px;
+  right: 40px;
+}
+
+/* Modal Styling */
+dialog#newsletter-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* Ensure the dialog itself is centered */
+#newsletter-dialog {
+  padding: 2rem;
+  border: none;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  background: #303030;
+  color: white;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 999;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -60%); }
+  to   { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+
+.newsletter-form input[type="email"] {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 1rem 0;
+  border: none;
+  border-radius: 4px;
+}
+
+.newsletter-form button[type="submit"] {
+  background-color: #8a470c;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.newsletter-form .close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: white;
+  cursor: pointer;
+}
