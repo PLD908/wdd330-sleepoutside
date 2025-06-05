@@ -36,6 +36,23 @@
       </section>
     </main>
 
+    <div class="newsletter-icon" onclick="document.getElementById('newsletter-dialog').showModal()">
+        <img src="/public/images/9133500_newsletter_icon.svg" alt="newsletter icon">
+      </div>
+
+      <!-- newsletter-modal.html -->
+        <dialog id="newsletter-dialog">
+          <form id="newsletter-form" method="dialog" class="newsletter-form">
+            <button type="button" class="close" onclick="closeNewsletterModal()">&times;</button>
+            <h2>Subscribe to Our Newsletter</h2>
+            <input type="email" id="email-input" placeholder="Your email" required>
+            <button type="submit">Subscribe</button>
+            <p id="thank-you-message" style="display: none; color: lightgreen; margin-top: 1rem;">
+              ✅ Thanks for subscribing!
+            </p>
+          </form>
+        </dialog>
+
     <footer id="main-footer">
 
     </footer>
