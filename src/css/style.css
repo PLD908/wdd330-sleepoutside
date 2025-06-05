@@ -634,3 +634,23 @@ dialog#newsletter-dialog::backdrop {
   color: white;
   cursor: pointer;
 }
+
+.alert {
+  background: #ffe0e0;
+  color: #a00;
+  padding: 1em;
+  border: 1px solid #a00;
+  border-radius: 5px;
+  margin-bottom: 1em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.alert-close {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  color: #a00;
+  cursor: pointer;
+}
+

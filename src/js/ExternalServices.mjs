@@ -1,10 +1,11 @@
 const baseURL = import.meta.env.VITE_SERVER_URL
 
-function convertToJson(res) {
+async function convertToJson(res) {
+  const jsonResponse = await res.json();
   if (res.ok) {
-    return res.json();
+    return jsonResponse;
   } else {
-    throw new Error(`Bad Response: ${res.status} - ${res.statusText}`);
+    throw { name: 'servicesError', message: jsonResponse };
   }
 }
 
@@ -13,18 +14,26 @@ export default class ExternalServices {
     this.category = category;
     this.path = `/json/${this.category}.json`;
   }
-  async getData(category) {
-  const response = await fetch(`${baseURL}products/search/${category} `);
-  const data = await convertToJson(response);
-  return data.Result;
-}
-  async findProductById(id) {
+    async getData(category) {
+    // If no category, fetch all products
+    let url;
+    if (category) {
+      url = `${baseURL}products/search/${category}`;
+    } else {
+      url = `${baseURL}products/search/tents`;
+    }
+    const response = await fetch(url);
+    const data = await convertToJson(response);
+    return data.Result;
+  }
+    async findProductById(id) {
     const products = await this.getData();
-    const product = products.find((item) => item.Id === id);
-    console.log('Found product by ID:', id, product);
+    // If products is an array of arrays, flatten it first:
+    const flatProducts = products.flat ? products.flat(Infinity) : products;
+    const product = flatProducts.find(item => item.Id === id);
     return product || null;
   }
-  
+
   async checkout(order) {
     const url = `${baseURL}checkout`;
     const options = {
@@ -35,8 +44,6 @@ export default class ExternalServices {
       body: JSON.stringify(order)
     };
     const response = await fetch(url, options);
-    console.log('Checkout response:', response);
-    if (!response.ok) throw new Error('Checkout failed');
-    return response.json();
+    return convertToJson(response);
   }
 }
