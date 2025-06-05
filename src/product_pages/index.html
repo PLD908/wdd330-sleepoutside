@@ -22,26 +22,25 @@
 
   <main class="divider">
     <section class="product-detail">
-      <h3>Marmot</h3>
+      <h3 id="card__brand"></h3>
 
-      <h2 class="divider">Ajax Tent - 3-Person, 3-Season</h2>
+      <h2 id="card__name"></h2>
 
-      <img class="divider"
-        src="../images/tents/marmot-ajax-tent-3-person-3-season-in-pale-pumpkin-terracotta~p~880rr_01~320.jpg"
-        alt="Marmot Ajax tent" />
+      <img
+        id="product-detail-img"
+        src=""
+        alt="" />
 
-      <p class="product-card__price">$199.99</p>
+      <p id="product-card__price"></p>
 
-      <p class="product__color">Pale Pumpkin/Terracotta</p>
+      <p id="product__color"></p>
 
-      <p class="product__description">
-        Get out and enjoy nature with Marmot&#39;s Ajax tent, featuring a
-        smart design with durable, waterproof construction and two doors for
-        easy access.
+      <p id="product__description">
+        
       </p>
 
-      <div class="product-detail__add">
-        <button id="addToCart" data-id="880RR">Add to Cart</button>
+      <div id="product-detail__add">
+        <button id="addToCart">Add to Cart</button>
       </div>
     </section>
   </main>
@@ -50,16 +49,7 @@
 
   </footer>
   <script type="module" src="../js/main.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const addToCartBtn = document.getElementById("addToCart");
-      if (addToCartBtn) {
-        addToCartBtn.addEventListener("click", function () {
-          console.log("Add to Cart button clicked");
-        });
-      }
-    });
-  </script>
+  <script type="module" src="../js/ProductDetails.mjs"></script>
 </body>
 
 </html>
