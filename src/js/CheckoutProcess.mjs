@@ -15,8 +15,8 @@ export default class CheckoutProcess {
 
   init() {
     this.list = getLocalStorage(this.key) || [];
+    this.calculateItemSubTotal();
     this.calculateOrderTotal();
-    // this.calculateItemSubTotal();
     // this.displayOrderTotals();
   }
 
@@ -28,6 +28,7 @@ export default class CheckoutProcess {
   }
 
   calculateOrderTotal() {
+    this.calculateItemSubTotal();      // <-- Add this line
     // Calculate tax and shipping
     this.tax = this.itemTotal * 0.06;
     const itemCount = this.list.reduce((sum, item) => sum + item.quantity, 0);

@@ -10,10 +10,8 @@ export function getLocalStorage(key) {
 }
 
 export function setLocalStorage(key, data) {
-  let items = getLocalStorage(key);
-  if (!Array.isArray(items)) items = [];
-  items.push(data);
-  localStorage.setItem(key, JSON.stringify(items));
+  // data should be the full array, not a single item
+  localStorage.setItem(key, JSON.stringify(data));
 }
 
 export function getParam(param) {

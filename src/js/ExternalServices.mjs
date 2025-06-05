@@ -20,16 +20,17 @@ export default class ExternalServices {
     if (category) {
       url = `${baseURL}products/search/${category}`;
     } else {
-      url = `${baseURL}products`;
+      url = `${baseURL}products/search/tents`;
     }
     const response = await fetch(url);
     const data = await convertToJson(response);
     return data.Result;
   }
-  async findProductById(id) {
+    async findProductById(id) {
     const products = await this.getData();
-    const product = products.find((item) => item.Id === id);
-    console.log('Found product by ID:', id, product);
+    // If products is an array of arrays, flatten it first:
+    const flatProducts = products.flat ? products.flat(Infinity) : products;
+    const product = flatProducts.find(item => item.Id === id);
     return product || null;
   }
 
