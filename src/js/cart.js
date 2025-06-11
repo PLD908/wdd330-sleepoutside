@@ -92,6 +92,7 @@ function removeFromCart(index) {
 }
 
 function cartItemTemplate(item, index) {
+  const colorName = item.Colors && item.Colors.length > 0 ? item.Colors[0].ColorName : '';
   const newItem = `<li class="cart-card divider">
     <a href="#" class="cart-card__image">
       <img src="${item.Image}" alt="${item.Name}" />
@@ -100,7 +101,7 @@ function cartItemTemplate(item, index) {
       <a href="#">
         <h2 class="card__name">${item.Name}</h2>
       </a>
-      <p class="cart-card__color">${item.Colors[0].ColorName}</p>
+      <p class="cart-card__color">${colorName}</p>
       <p class="cart-card__quantity">qty: ${item.quantity || 1}</p>
       <div class="cart-card__quantity__buttons">
         <button class="cart-card__quantity__down" data-index="${index}">-</button>
