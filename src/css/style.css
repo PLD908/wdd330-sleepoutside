@@ -350,6 +350,24 @@ footer {
   background-color: #aa3939;
 }
 
+.cart-card__wishlist {
+  background-color: var(--dark-grey);
+  border: none;
+  color: white;
+  padding: 0.5em 1em;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 0.8em;
+  margin: 0.5em 0;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.cart-card__wishlist:hover {
+  background-color: var(--secondary-color);
+}
+
 .cart-empty {
   padding: 2em;
   text-align: center;

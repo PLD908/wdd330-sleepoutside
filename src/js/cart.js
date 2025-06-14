@@ -109,6 +109,7 @@ function cartItemTemplate(item, index) {
       </div>
       <p class="cart-card__price">$${item.FinalPrice}</p>
       <button class="cart-card__remove" data-index="${index}">Remove</button>
+      <button class="cart-card__wishlist" data-index="${index}">Move to Wishlist</button>
     </div>
   </li>`;
 
