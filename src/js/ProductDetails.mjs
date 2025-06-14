@@ -40,6 +40,12 @@ export default class ProductDetails {
       console.error('Add to Cart button not found in the DOM');
     }
 
+    // Add this for the wishlist button
+    const addToWishlistButton = document.getElementById('addToWishlist');
+    if (addToWishlistButton) {
+      addToWishlistButton.addEventListener('click', this.addProductToWishlist.bind(this));
+    }
+
     this.renderProductDetails();
 
   }
@@ -67,6 +73,30 @@ export default class ProductDetails {
     setLocalStorage('so-cart', cart);
     numberOfCartItems();
     alert('Item added to cart!');
+  }
+
+  addProductToWishlist() {
+    console.log("this.product is array?", Array.isArray(this.product), this.product);
+    if (!this.product || !this.product.Id) return;
+  
+    let wishlist = getLocalStorage('so-wishlist') || [];
+    const existing = wishlist.find(item => item.Id === this.product.Id);
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      // Map to cart structure (not an array!)
+      wishlist.push({
+        Id: this.product.Id,
+        Name: this.product.Name,
+        Image: this.product.Images?.PrimaryLarge || '',
+        Colors: this.product.Colors || [],
+        FinalPrice: this.product.FinalPrice || this.product.ListPrice || 0,
+        quantity: 1
+      });
+    }
+    console.log("Wishlist before saving:", wishlist);
+    setLocalStorage('so-wishlist', wishlist);
+    alert('Item added to wishlist!');
   }
 
   renderProductDetails() {

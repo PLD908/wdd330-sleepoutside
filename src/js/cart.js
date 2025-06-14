@@ -47,6 +47,11 @@ function setupEventListeners() {
     button.addEventListener("click", removeItemHandler);
   });
 
+  document.querySelectorAll(".cart-card__wishlist").forEach((button) => {
+    button.removeEventListener("click", moveToWishlistHandler);
+    button.addEventListener("click", moveToWishlistHandler);
+  });
+
   const checkoutButton = document.getElementById("checkout-button");
   if (checkoutButton) {
     checkoutButton.removeEventListener("click", handleCheckoutClick);
@@ -75,6 +80,34 @@ function updateQuantity(index, change) {
     renderCartContents();
     setupEventListeners(); // **Ensure listeners reattach after updating quantity**
   }
+}
+
+function moveToWishlistHandler(event) {
+  const index = parseInt(event.target.dataset.index, 10);
+  moveToWishlist(index);
+}
+
+function moveToWishlist(index) {
+  const cartItems = getLocalStorage("so-cart");
+  const wishlistItems = getLocalStorage("so-wishlist") || [];
+  const item = cartItems[index];
+
+  // Check if item already in wishlist
+  const existing = wishlistItems.find(wishlistItem => wishlistItem.Id === item.Id);
+  if (existing) {
+    existing.quantity += item.quantity || 1;
+  } else {
+    wishlistItems.push(item);
+  }
+
+  // Remove from cart
+  cartItems.splice(index, 1);
+
+  localStorage.setItem("so-wishlist", JSON.stringify(wishlistItems));
+  localStorage.setItem("so-cart", JSON.stringify(cartItems));
+  renderCartContents();
+  setupEventListeners();
+  numberOfCartItems();
 }
 
 function removeItemHandler(event) {
@@ -109,6 +142,7 @@ function cartItemTemplate(item, index) {
       </div>
       <p class="cart-card__price">$${item.FinalPrice}</p>
       <button class="cart-card__remove" data-index="${index}">Remove</button>
+      <button class="cart-card__wishlist" data-index="${index}">Move to Wishlist</button>
     </div>
   </li>`;
 
