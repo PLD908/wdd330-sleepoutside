@@ -1,5 +1,8 @@
-import { setLocalStorage } from './utils.mjs';
-import { numberOfCartItems } from './cartItems';
+import { setLocalStorage, getLocalStorage } from './utils.mjs';
+import { numberOfCartItems } from './cartItems.js';
+
+const baseURL = import.meta.env.VITE_SERVER_URL
+const addToCartButton = document.getElementById('addToCart');
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
@@ -25,45 +28,88 @@ export default class ProductDetails {
         console.error('Product not found for ID:', this.productId);
         return;
       }
-      console.log('Fetched product:', this.product);
     } catch (error) {
       console.error('Error fetching product:', error);
       return;
     }
 
-    this.renderProductDetails();
-
-    const addToCartButton = document.getElementById('addToCart');
     if (addToCartButton) {
       addToCartButton.addEventListener('click', this.addProductToCart.bind(this));
       console.log('Event listener attached to Add to Cart button');
     } else {
       console.error('Add to Cart button not found in the DOM');
     }
+
+    // Add this for the wishlist button
+    const addToWishlistButton = document.getElementById('addToWishlist');
+    if (addToWishlistButton) {
+      addToWishlistButton.addEventListener('click', this.addProductToWishlist.bind(this));
+    }
+
+    this.renderProductDetails();
+
   }
 
   addProductToCart() {
-    if (!this.product || !this.product.Id) {
-      console.error('No valid product data available to add to cart:', this.product);
-      return;
+    console.log("this.product is array?", Array.isArray(this.product), this.product);
+    if (!this.product || !this.product.Id) return;
+  
+    let cart = getLocalStorage('so-cart') || [];
+    const existing = cart.find(item => item.Id === this.product.Id);
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      // Map to cart structure (not an array!)
+      cart.push({
+        Id: this.product.Id,
+        Name: this.product.Name,
+        Image: this.product.Images?.PrimaryLarge || '',
+        Colors: this.product.Colors || [],
+        FinalPrice: this.product.FinalPrice || this.product.ListPrice || 0,
+        quantity: 1
+      });
     }
-    console.log('Adding to cart:', this.product);
-    
-    setLocalStorage('so-cart', this.product);
-    numberOfCartItems(); //Updates the cart superscript number of items
+    console.log("Cart before saving:", cart);
+    setLocalStorage('so-cart', cart);
+    numberOfCartItems();
     alert('Item added to cart!');
-    console.log('Cart updated in localStorage:', getLocalStorage('so-cart'));
+  }
+
+  addProductToWishlist() {
+    console.log("this.product is array?", Array.isArray(this.product), this.product);
+    if (!this.product || !this.product.Id) return;
+  
+    let wishlist = getLocalStorage('so-wishlist') || [];
+    const existing = wishlist.find(item => item.Id === this.product.Id);
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      // Map to cart structure (not an array!)
+      wishlist.push({
+        Id: this.product.Id,
+        Name: this.product.Name,
+        Image: this.product.Images?.PrimaryLarge || '',
+        Colors: this.product.Colors || [],
+        FinalPrice: this.product.FinalPrice || this.product.ListPrice || 0,
+        quantity: 1
+      });
+    }
+    console.log("Wishlist before saving:", wishlist);
+    setLocalStorage('so-wishlist', wishlist);
+    alert('Item added to wishlist!');
   }
 
   renderProductDetails() {
-    const nameElement = document.querySelector('.product-detail h2');
-    const imageElement = document.querySelector('.product-detail img');
-    const priceElement = document.querySelector('.product-card__price');
-    const descriptionElement = document.querySelector('.product__description');
-    const colorElement = document.querySelector('.product__color');
+      document.querySelector('#card__brand').textContent = this.product.Brand?.Name || '';
+      document.querySelector('#card__name').textContent = this.product.NameWithoutBrand || '';
+      document.querySelector('#product-detail-img').src = this.product.Images?.PrimaryLarge || '';
+      document.querySelector('#product-detail-img').alt = this.product.Name || '';
+      document.querySelector('#product-card__price').textContent = `$${this.product.ListPrice || '0.00'}`;
+      document.querySelector('#product__color').textContent = this.product.Colors?.[0]?.ColorName || '';
+      document.querySelector('#product__description').textContent = this.product.DescriptionHtmlSimple?.replace(/<[^>]+>/g, '') || '';
 
     if (nameElement) nameElement.textContent = this.product.Name || 'Unknown Product';
-    if (imageElement) imageElement.src = this.product.Image || '';
+    if (imageElement) imageElement.src = this.product.Images.PrimaryLarge || '';
     if (priceElement) priceElement.textContent = `$${this.product.ListPrice || '0.00'}`;
     if (descriptionElement) {
       // Strip HTML tags and set plain text

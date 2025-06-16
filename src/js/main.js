@@ -1,13 +1,33 @@
-import ProductData from "./ProductData.mjs";
-import ProductList from "./ProductList.mjs";
 import { loadHeaderFooter } from './utils.mjs';
 import { numberOfCartItems } from "./cartItems.js";
 
 loadHeaderFooter(numberOfCartItems);
 
 
-const dataSource = new ProductData("tents");
-const listElement = document.querySelector(".product-lists"); // Adjust selector based on your HTML
-const productList = new ProductList("tents", dataSource, listElement);
+/*=========================
+NEWSLETTER MODAL 
+==========================*/
+const form = document.getElementById('newsletter-form');
+const dialog = document.getElementById('newsletter-dialog');
+const thankYouMsg = document.getElementById('thank-you-message');
 
-productList.init();
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Simulate signup (e.g., save email)
+        thankYouMsg.style.display = 'block';
+
+        // Optionally clear email input
+        document.getElementById('email-input').value = '';
+
+        // Auto-close after 2 seconds
+        setTimeout(() => {
+        dialog.close();
+        thankYouMsg.style.display = 'none';
+        }, 2000);
+    });
+
+window.closeNewsletterModal = function () {
+    document.getElementById('newsletter-dialog').close();
+    document.getElementById('thank-you-message').style.display = 'none';
+    };

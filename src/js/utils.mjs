@@ -10,10 +10,8 @@ export function getLocalStorage(key) {
 }
 
 export function setLocalStorage(key, data) {
-  let items = getLocalStorage(key);
-  if (!Array.isArray(items)) items = [];
-  items.push(data);
-  localStorage.setItem(key, JSON.stringify(items));
+  // data should be the full array, not a single item
+  localStorage.setItem(key, JSON.stringify(data));
 }
 
 export function getParam(param) {
@@ -77,4 +75,19 @@ export async function loadHeaderFooter(callback) {
   if (callback) {
     callback();
   }
+}
+
+export function alertMessage(message, scroll = true) {
+  const alert = document.createElement('div');
+  alert.classList.add('alert');
+  alert.innerHTML = `
+    <span>${message}</span>
+    <button class="alert-close" aria-label="Close">&times;</button>
+  `;
+  alert.querySelector('.alert-close').addEventListener('click', function() {
+    alert.remove();
+  });
+  const main = document.querySelector('main');
+  main.prepend(alert);
+  if (scroll) window.scrollTo(0, 0);
 }
